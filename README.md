@@ -14,4 +14,4 @@ O projeto consiste em várias API que integram o back end da aplicação o escop
     * KUBERNETS
     * DOCKER
     * GCP - Google Cloud Plataform
-	
+	* SWAGGER-UI (Documentação e teste das API)
