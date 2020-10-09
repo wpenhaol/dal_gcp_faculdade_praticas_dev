@@ -1,0 +1,77 @@
+# POD - API configuration (with Google Endpoints)
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  # Normal services name
+  name: REPOSITORY_NAME
+spec:
+  # Number of replicas
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: REPOSITORY_NAME
+  template:
+    metadata:
+      labels:
+        # Normal services name and tier (same selectors as the services configuration)
+        app: REPOSITORY_NAME
+        tier: backend
+    spec:
+      containers:
+        # [START endpoints]
+        # Your SERVICE_NAME is the same that you configured in the HOST field of your OpenAPI document
+        #nombre del contenedor
+        - name: REPOSITORY_NAME
+          #ruta de imagen en container registry
+          image: REGISTRY_HOSTNAME/PROJECT_ID/REPOSITORY_NAME:IMAGE_TAG
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8090
+          env:
+            - name: DATABASE_USERNAME
+              value: tecgru62_devfacu
+            - name: DATABASE_PASSWORD
+              value: 2bi20HD7Ol9z
+          volumeMounts:
+            - name: pubsub-consume
+              mountPath: /secrets/pubsub
+              readOnly: true
+            - name: sa-files-bucket
+              mountPath: /secrets/bucket
+              readOnly: true
+      volumes:
+        - name: pubsub-consume
+          secret:
+            secretName: pubsub-consume
+        - name: sa-files-bucket
+          secret:
+            secretName: sa-files-bucket
+---
+# Service configuration
+# You can configure the services exposure here
+# bl-serviceName for BackEnd, bff-serviceName for BackendForFrontend, dal-serviceName for Data Abstraction Layer
+apiVersion: v1
+kind: Service
+metadata:
+  # Normal services name
+  name: REPOSITORY_NAME
+spec:
+  ports:
+    - port: 80
+      # 8080 normal services, 8081 services with endpoints
+      targetPort: 8090
+      protocol: TCP
+      name: http
+  selector:
+    # Normal services name and tier
+    app: REPOSITORY_NAME
+    # backend, frontend
+    tier: backend
+  # LOCAL/INTERNAL: NodePort, GCP/EXTERNAL: LoadBalancer
+  type: NodePort

@@ -1,0 +1,45 @@
+server:
+  port: ${SPRING_PORT_SERVER:8090}
+  servlet:
+    context-path: /dal-gcp-facu
+spring:
+  application:
+    name: dal-gcp-facu
+  datasource:
+    url: jdbc:mysql://192.185.176.145:3306/tecgru62_pratica_desenvolvimento_agil
+    username: ${DATABASE_USERNAME:tecgru62_devfacu}
+    password: ${DATABASE_PASSWORD:2bi20HD7Ol9z}
+  jpa:
+    show-sql: true
+    properties:
+      hibernate.format_sql: true
+      hibernate.ddl-auto: validate
+      hibernate.dialect: org.hibernate.dialect.MySQL5Dialect
+  jackson:
+    default-property-inclusion: non_null
+path:
+  req:
+    client:
+      all: /client
+      id: /{id}/id
+    employee:
+      all: /employee
+      id: /{id}/id
+    car:
+      all: /car
+      id: /{id}/id
+      car-price: /car/price
+      car-model: /car/model
+      car-brand: /car/brand
+    payment:
+      all: /payment
+      id: /{id}/id
+    order:
+      all: /order
+      id: /{id}/id
+    estimate:
+      all: /estimate
+      id: /{id}/id
+    sale:
+      all: /sale
+      id: /{id}/id
